@@ -69,24 +69,25 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="log">Console Log</button>
+      <button id="error">Console Error</button>
+      <button id="count">Console Count</button>
+      <button id="warn">Console Warn</button>
+      <button id="assert">Console Assert</button>
+      <button id="clear">Console Clear</button>
+      <button id="dir">Console Dir</button>
+      <button id="dirxml">Console dirxml</button>
+      <button id="groupStart">Console Group Start</button>
+      <button id="groupEnd">Console Group End</button>
+      <button id="table">Console Table</button>
+      <button id="timerStart">Start Timer</button>
+      <button id="timerEnd">End Timer</button>
+      <button id="trace">Console Trace</button>
+      <button id="global">Trigger a Global Error</button>
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
@@ -95,13 +96,129 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+
+      try {
+        if (isNaN(firstNum) || isNaN(secondNum)) {
+          throw new Error('Invalid input: Both inputs must be numbers only.');
+        }
+
+        //if both are numbers, continue with calculation
+        let result;
+        switch (operator) {
+          case '-':
+            result = firstNum - secondNum;
+            break;
+          case '*':
+            result = firstNum * secondNum;
+            break;
+          case '/':
+            if (secondNum == 0) {
+              throw new Error('Division by zero is not allowed.');
+            }
+            result = firstNum / secondNum;
+            break;
+          default:
+            result = firstNum + secondNum;
+        }
+
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }catch (error) {
+        console.log(error);
+      }finally {
+        console.log('Calculation Done');
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
-    // You may move this JS to another file if you wish
+    document.getElementById('log').addEventListener('click', function() {
+      console.log('Console Log Demo');
+    });
+    
+    document.getElementById('error').addEventListener('click', function() {
+      console.error('Console Error Demo');
+    });
+
+    document.getElementById('count').addEventListener('click', function() {
+      console.count('Count Button');
+    });
+
+    document.getElementById('warn').addEventListener('click', function() {
+      console.warn('Console Warn Button');
+    });
+
+    document.getElementById('assert').addEventListener('click', function() {
+      console.assert(false, 'Console Assertion false');
+    });
+
+    document.getElementById('clear').addEventListener('click', function() {
+      console.clear();
+    });
+
+    document.getElementById('dir').addEventListener('click', function() {
+      console.dir(document.body);
+    });
+
+    document.getElementById('dirxml').addEventListener('click', function() {
+      console.dirxml(document);
+    });
+
+    document.getElementById('groupStart').addEventListener('click', function() {
+      console.group('Console Group');
+    });
+
+    document.getElementById('groupEnd').addEventListener('click', function() {
+      console.groupEnd();
+    });
+
+    var people = [
+      {
+        first: 'Mia',
+        last: 'Le',
+      },
+      {
+        first: 'Tuam',
+        last: 'Lesly',
+      },
+      {
+        first: 'Yno',
+        last: 'Paul',
+      }
+    ];
+    document.getElementById('table').addEventListener('click', function() {
+      console.table(people);
+    });
+
+    document.getElementById('timerStart').addEventListener('click', function() {
+      console.time('Timer');
+    });
+
+    document.getElementById('timerEnd').addEventListener('click', function() {
+      console.timeEnd('Timer');
+    });
+
+    //Dont think i did this one right
+    document.getElementById('trace').addEventListener('click', function() {
+      console.trace();
+    });
+
+    //Global trigger error
+    window.onerror = function(msg, url, line){
+      console.error('Global error: ', msg, 'from', url, 'at', line);
+      return true;
+    }
+               
+    document.getElementById('global').addEventListener('click', function() {
+      dontExist();
+    });
+
+    window.TrackJS && TrackJS.install({ 
+      token: "639aaac4c1d44297ba4c5a146623aa04"
+    });
+
+    TrackJS.track('Testing TrackJS!');    
+
   </script>
 </body>
 
